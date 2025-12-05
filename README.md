@@ -1,5 +1,22 @@
 
 # binance-etl-pipeline
+📊 Binance ETL Pipeline with Python, BigQuery & dbt
+
+A fully automated ELT pipeline that extracts public Binance market data and user activity, loads it into Google BigQuery, and transforms it into analytics-ready data models using dbt.
+
+This project follows a modern Medallion Architecture (Bronze → Silver → Gold) and includes data quality tests, orchestration design, and production-ready SQL/Python workflows.
+
+🚀 Project Overview
+
+This project demonstrates how to build a complete data pipeline using:
+
+Python — Extract Binance API data (transactions, users, market rates)
+
+BigQuery — Scalable cloud data warehouse to store raw & transformed datasets
+
+dbt — SQL transformation framework for modeling, testing, and documentation
+
+Medallion Data Model — Multi-layer architecture for clean, scalable analytics
 
 # How to Run the Project
 
