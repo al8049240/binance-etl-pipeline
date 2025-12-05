@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="@www.googleapis.com/bigquery/v2" uuid="f802296b-9370-48f1-a07c-ea68008deb37">
+      <driver-ref>bigquery</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.simba.googlebigquery.jdbc42.Driver</jdbc-driver>
+      <jdbc-url>jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443;DefaultDataset=raw</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="ProjectId" value="awesome-carver-401507" />
+        <property name="OAuthServiceAcctEmail" value="dbt-user@awesome-carver-401507.iam.gserviceaccount.com" />
+        <property name="OAuthPvtKeyPath" value="C:\Users\lethi\PycharmProjects\dbtProject\crawling_binance_data\awesome-carver-401507-511d1e3f99b9.json" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>

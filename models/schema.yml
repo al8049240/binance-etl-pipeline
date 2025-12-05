@@ -1,0 +1,214 @@
+version: 2
+
+models:
+  - name: staging_transactions
+    columns:
+      - name: TXN_ID
+        tests:
+          - unique
+          - not_null
+      - name: USER_ID
+        tests:
+          - not_null
+      - name: SRC_CUR
+        tests:
+          - not_null
+      - name: DST_CUR
+        tests:
+          - not_null
+      - name: SRC_AMT
+        tests:
+          - not_null
+      - name: DST_AMT
+      - name: CRE_AT
+        tests:
+          - not_null
+      - name: STATUS
+        tests:
+          - not_null
+
+  - name: staging_users
+    columns:
+      - name: USER_ID
+        tests:
+          - unique
+          - not_null
+      - name: KYC_LVL
+        tests:
+          - not_null
+      - name: CRE_AT
+        tests:
+          - not_null
+      - name: UPD_AT
+        tests:
+          - not_null
+
+  - name: staging_rates
+    columns:
+      - name: SYMBOL
+        tests:
+          - not_null
+      - name: OPEN_AT
+        tests:
+          - not_null
+      - name: CLOSE_AT
+        tests:
+          - not_null
+      - name: OPEN_USD
+        tests:
+          - not_null
+      - name: HIGH_USD
+        tests:
+          - not_null
+      - name: LOW_USD
+        tests:
+          - not_null
+      - name: CLOSE_USD
+        tests:
+          - not_null
+      - name: VOL
+        tests:
+          - not_null
+      - name: QVOL
+        tests:
+          - not_null
+      - name: TRADES
+        tests:
+          - not_null
+      - name: TAKER_VOL
+        tests:
+          - not_null
+      - name: TAKER_QVOL
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - SYMBOL
+            - OPEN_AT
+            - CLOSE_AT
+
+  - name: fact_transactions
+    columns:
+      - name: TXN_ID
+        description: "Unique transaction ID."
+        tests:
+          - not_null
+          - unique
+
+      - name: USER_ID
+        description: "User associated with the transaction."
+        tests:
+          - not_null
+
+      - name: DST_CUR
+        description: "Destination currency of the transaction."
+        tests:
+          - not_null
+
+      - name: DST_AMT
+        description: "Destination amount before conversion."
+        tests:
+          - not_null
+
+      - name: CLOSE_USD
+        description: "Closing USD rate for the currency at transaction time."
+        tests:
+          - not_null
+
+      - name: DST_AMT_USD
+        description: "Converted amount in USD."
+        tests:
+          - not_null
+          - is_positive
+          - check_usd_conversion
+
+      - name: CRE_AT
+        description: "Timestamp when the transaction was created."
+        tests:
+          - not_null
+
+      - name: KYC_LVL
+        description: "KYC level of the user at transaction time."
+        tests: [ ]
+    tests:
+      - required_currencies:
+          column_name: DST_CUR
+          required_list:
+            - ADAUSDT
+            - BNBUSDT
+            - BTCUSDT
+            - DOGEUSDT
+            - ETHUSDT
+            - LTCUSDT
+            - POLUSDT
+            - SUSDT
+            - SHIBUSDT
+            - SOLUSDT
+            - TRXUSDT
+            - XLMUSDT
+            - XRPUSDT
+            - AXSUSDT
+            - UNIUSDT
+            - USDCUSDT
+            - XTZUSDT
+            - AVAXUSDT
+            - BCHUSDT
+            - NEARUSDT
+            - ETCUSDT
+            - LINKUSDT
+            - DOTUSDT
+
+  - name: agg_ttl_by_kyc_lvl
+    columns:
+      - name: DAY
+        tests:
+          - not_null
+
+      - name: MON
+        tests:
+          - not_null
+
+
+      - name: YR
+        tests:
+          - not_null
+
+      - name: QTR
+        tests:
+          - not_null
+
+      - name: KYC
+        tests:
+          - not_null
+
+      - name: TOTAL_USD
+        tests:
+          - not_null
+
+      - name: NUM_TXN
+        tests:
+            - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+          - DAY
+          - KYC
+      - dbt_utils.expression_is_true:
+          expression: "CASE WHEN NUM_TXN = 0 THEN TOTAL_USD = 0 ELSE TRUE END"
+      - dbt_utils.expression_is_true:
+          name: valid_num_txn_non_negative
+          expression: "NUM_TXN >= 0"
+      - dbt_utils.expression_is_true:
+          name: valid_num_txn_integer
+          expression: "NUM_TXN = CAST(NUM_TXN AS INT64)"
+      - dbt_utils.expression_is_true:
+          name: valid_ttl_usd_non_negative
+          expression: "TOTAL_USD >= 0"
+      - dbt_utils.expression_is_true:
+          name: round_ttl_usd
+          expression: "ROUND(TOTAL_USD, 2) = TOTAL_USD"
+      - valid_gold_date_format
+
+
+

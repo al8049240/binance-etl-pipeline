@@ -1,0 +1,16 @@
+version: 2
+
+# ----------------------------
+# Sources (raw tables)
+# ----------------------------
+sources:
+  - name: raw
+    description: "Raw tables dataset"
+    schema: raw                 # dataset/schema where raw tables live
+    tables:
+      - name: transactions
+        description: "Raw transaction data"
+      - name: users
+        description: "Raw user data"
+      - name: binance_klines
+        description: "Raw exchange rates data"
